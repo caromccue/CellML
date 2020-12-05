@@ -145,7 +145,7 @@ def segment(img, exp_clip_limit=15):
     return (segmented, segmented.max()-1)
 
 
-def extract_indiv_droplets(img, labeled, border=25, ecc_cutoff=0.8, area_perc_cutoff=0.6):
+def extract_indiv_droplets(img, labeled, border=20, ecc_cutoff=0.8, area_perc_cutoff=0.6, upper_perc_cutoff=1.6):
     '''
     Separate the individual droplets as their own image.
 
@@ -182,8 +182,9 @@ def extract_indiv_droplets(img, labeled, border=25, ecc_cutoff=0.8, area_perc_cu
 
     # Get area cutoff
     area_cutoff = area_perc_cutoff * np.mean([region.area for region in reg])
+    area_upper_cutoff = upper_perc_cutoff * np.mean([region.area for region in reg])
 
-    reg_clean = [region for region in reg if (region.eccentricity < ecc_cutoff) and region.area > area_cutoff]
+    reg_clean = [region for region in reg if (region.eccentricity < ecc_cutoff) and region.area > area_cutoff and region.area < area_upper_cutoff]
 
     for region in reg_clean:
         (min_row, min_col, max_row, max_col) = region.bbox
