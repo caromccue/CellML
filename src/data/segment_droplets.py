@@ -115,16 +115,16 @@ def segment(img, exp_clip_limit=15):
 
     # Remove small dark regions
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(4,4))
-    closed = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, iterations = 2)
+    closed = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, iterations = 1)
     fill_holes = ndi.morphology.binary_fill_holes(closed, structure=np.ones((3, 3))).astype('uint8')
 
     # Sure background area
-    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (4, 4))
     sure_bg = np.uint8(cv2.dilate(fill_holes, kernel, iterations=1))
 
     # Sure foreground area
     dist_transform_fg = cv2.distanceTransform(fill_holes, cv2.DIST_L2, 5)
-    _, sure_fg = cv2.threshold(dist_transform_fg, 0.25*dist_transform_fg.max(), 255, 0)
+    _, sure_fg = cv2.threshold(dist_transform_fg, 0.2*dist_transform_fg.max(), 255, 0)
     clear_border(sure_fg)
     sure_fg = np.uint8(sure_fg)
 
@@ -145,7 +145,7 @@ def segment(img, exp_clip_limit=15):
     return (segmented, segmented.max()-1)
 
 
-def extract_indiv_droplets(img, labeled, border=20, ecc_cutoff=0.8, area_perc_cutoff=0.6, upper_perc_cutoff=1.6):
+def extract_indiv_droplets(img, labeled, border=15, ecc_cutoff=0.8, area_perc_cutoff=0.7, upper_perc_cutoff=1.5):
     '''
     Separate the individual droplets as their own image.
 
