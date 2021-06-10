@@ -58,15 +58,7 @@ def process_image(image_path, crop_box, model, save_overlay=False):
         num_crystal = num_drops - num_clear
     
     else:
-        X  = np.asarray(drop_images)
-        Y = model.predict_classes(X).flatten().tolist()
-
-        logging.warning("No droplets found in image %s", image_path)
-        num_drops = 0
-        num_clear = 0
-        num_crystal = 0
-
-        dropimages.remove(image_path)
+        os.remove(image_path)
 
     # Save overlay if applicable
     if save_overlay:
