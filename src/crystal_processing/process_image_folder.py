@@ -62,6 +62,9 @@ def process_image(image_path, crop_box, model, save_overlay=False):
 
     # Save overlay if applicable
     if save_overlay:
+        X  = np.asarray(drop_images)
+        Y = model.predict_classes(X).flatten().tolist()
+
         path = os.path.join(os.path.dirname(image_path), 'overlay', os.path.basename(image_path))
         save_overlay_image(path, cropped, regProps, Y)
 
