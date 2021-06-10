@@ -51,7 +51,7 @@ def process_image(image_path, crop_box, model, save_overlay=False):
     # Predict labels from model
     if drop_images and len(drop_images) > 0:
         X  = np.asarray(drop_images)
-        Y = np.asarray(model.predict_classes(X).flatten().tolist())
+        Y = model.predict_classes(X).flatten().tolist()
 
         num_drops = len(Y)
         num_clear = Y.count(0)
@@ -63,12 +63,12 @@ def process_image(image_path, crop_box, model, save_overlay=False):
         num_crystal = 0
 
     # Save overlay if applicable
-    if save_overlay:
-        X  = np.asarray(drop_images)
-        Y = np.asarray(model.predict_classes(X).flatten().tolist())
+    #if save_overlay:
+     #   X  = np.asarray(drop_images)
+      #  Y = model.predict_classes(X).flatten().tolist()
 
-        path = os.path.join(os.path.dirname(image_path), 'overlay', os.path.basename(image_path))
-        save_overlay_image(path, cropped, regProps, Y)
+     #   path = os.path.join(os.path.dirname(image_path), 'overlay', os.path.basename(image_path))
+    #    save_overlay_image(path, cropped, regProps, Y)
 
     return (date_taken, num_drops, num_clear, num_crystal)
 
