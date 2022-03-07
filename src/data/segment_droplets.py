@@ -7,7 +7,7 @@ import warnings
 import logging
 import numpy as np
 
-from skimage import io, morphology
+from skimage import io, morphology, exposure
 from skimage.color import rgb2gray, label2rgb
 from skimage.feature import canny, blob_dog, blob_log, blob_doh,  peak_local_max
 from skimage.filters import sobel, threshold_otsu, try_all_threshold, threshold_local, threshold_minimum
@@ -28,7 +28,7 @@ from tqdm import tqdm
 
 from src.data.utils import open_grey_scale_image
 
-def segment(img, exp_clip_limit=15, postsize=140):
+def segment(img, exp_clip_limit=4, postsize=140):
     '''
     Segments droplets in an image using a watershed algorithm. OpenCV implementation.
 
@@ -136,8 +136,8 @@ def extract_indiv_droplets(img, labeled, border=25, area_upper_cutoff=0.9, area_
     for region in reg_clean:
         (min_row, min_col, max_row, max_col) = region.bbox
         drop_image = img[np.max([min_row-border,0]):np.min([max_row+border,max_row]),np.max([min_col-border,0]):np.min([max_col+border,max_col])]
-        resized = drop_image * 255
-       #expanded_dim = np.expand_dims(resized, axis=2)
+        contrast_stretch = exposure.rescale_intensity(drop_image, in_range=(0,255))
+        resized = contrast_stretch * 255
         img_list.append(resized)
 
     return img_list, reg_clean
