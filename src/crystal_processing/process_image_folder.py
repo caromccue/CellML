@@ -111,7 +111,7 @@ def process_image_batch(image_list, crop_box, model_name, batch_number=0, verbos
 
     return data
 
-def process_image_folder(directory, crop_box=None, show_plot=False, save_overlay=False, show_segmentation=False):
+def process_image_folder(directory, show_plot=False, save_overlay=False, show_segmentation=False):
 
     # List images in directory
     supported_extensions = ['jpg', 'png', 'gif', 'jpeg ', 'eps', 'bmp', 'tiff', 'bmp',
@@ -121,16 +121,10 @@ def process_image_folder(directory, crop_box=None, show_plot=False, save_overlay
     # Define the model path
     model_name = "cnn-simple-model.json"
 
-    # Obtain crop box from user if not passed as argument
-    while not crop_box:
-        logging.info("Crop box not passed, opening ROI selection tool")
-        first_image = open_grey_scale_image(image_list[0])
-        crop_box = select_rectangle(first_image)
-
     # If show segmentation flag is asserted, display the segmentation of an image
     if show_segmentation:
         idx_80 = int(len(image_list) * 0.8)
-        image_80 = crop(open_grey_scale_image(image_list[idx_80]), crop_box)
+        image_80 = open_grey_scale_image(image_list[idx_80])
         logging.info("Segmentation check requested. Segmenting image %s", image_list[idx_80])
         labeled, _ = segment(image_80)
 
@@ -166,7 +160,7 @@ def process_image_folder(directory, crop_box=None, show_plot=False, save_overlay
 
     if num_images < num_cpu:
         logging.info("Processing on a single thread.")
-        flat_data = process_image_batch(image_list, crop_box, model_name, 0, logging.root.level, save_overlay)
+        flat_data = process_image_batch(image_list, model_name, 0, logging.root.level, save_overlay)
     else:
         logging.info("Processing in parallel")
         batch_size = max([1, num_images // (num_cpu-1)])
@@ -176,7 +170,6 @@ def process_image_folder(directory, crop_box=None, show_plot=False, save_overlay
 
         # Process all images from directory in parallel
         data = Parallel(n_jobs=-2)(delayed(process_image_batch)(image_list[i*batch_size:min([(i+1)*batch_size, num_images])],
-                                                                        crop_box,
                                                                         model_name,
                                                                         i,
                                                                         logging.root.level,

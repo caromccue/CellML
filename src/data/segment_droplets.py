@@ -26,7 +26,7 @@ import os
 from tqdm import tqdm
 
 
-from src.data.utils import select_rectangle, open_grey_scale_image, crop
+from src.data.utils import open_grey_scale_image
 
 def segment(img, exp_clip_limit=15, postsize=85):
     '''
@@ -142,42 +142,30 @@ def extract_indiv_droplets(img, labeled, border=25, area_upper_cutoff=0.8, area_
 
     return img_list, reg_clean
 
-def segment_droplets_to_file(image_filename, crop_box=None, save_overlay=False):
+def segment_droplets_to_file(image_filename, save_overlay=False):
 
     if os.path.isdir(image_filename):
         img_list = [os.path.join(image_filename,f) for f in os.listdir(image_filename) if f.endswith('.jpg')]
     elif os.path.isfile(image_filename):
         img_list = [image_filename]
 
-    # Get the crop box from the first image if not provided
-    print('Getting crop box from image {}'.format(img_list[0]))
-    if not crop_box:
-        crop_box = select_rectangle(open_grey_scale_image(img_list[0]))
-
     for image_file in tqdm(img_list):
         # Open image
         image = open_grey_scale_image(image_file)
 
-        # Obtain crop box from user if not passed as argument
-        if not crop_box:
-            crop_box = select_rectangle(image)
-
-        # Crop image
-        cropped = crop(image, crop_box)
-
         # Segment image
-        (labeled) = segment(cropped)
+        (labeled, num_regions) = segment(image)
 
         # Save the overlay image if requested
         if save_overlay:
-            image_overlay = label2rgb(labeled, image=cropped, bg_label=0)
+            image_overlay = label2rgb(labeled, bg_label=0)
             filename = image_file.split('.')[0] + '_segmented.jpg'
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 io.imsave(filename, image_overlay)
 
         # Extract individual droplets
-        drop_images, _ = extract_indiv_droplets(cropped, labeled)
+        drop_images, _ = extract_indiv_droplets(image, labeled)
 
         # Output folder has the same name as the image by default
         out_directory = image_file.split('.')[0]
