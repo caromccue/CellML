@@ -6,14 +6,7 @@ from math import sqrt
 
 import numpy as np
 
-import pandas as pd
-
-import matplotlib
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-
-import skimage
-from skimage import io, exposure, img_as_float, img_as_ubyte, morphology, filters, util
+from skimage import io, morphology
 from skimage.color import rgb2gray, label2rgb
 from skimage.feature import canny, blob_dog, blob_log, blob_doh,  peak_local_max
 from skimage.filters import sobel, threshold_otsu, try_all_threshold, threshold_local, threshold_minimum
@@ -25,17 +18,14 @@ from skimage.morphology import closing
 
 import cv2
 
-from scipy import ndimage as ndi
 
 import os
 
-import plotly.graph_objs as go
 
 from tqdm import tqdm
 
-from scipy import ndimage as ndi
 
-from src.data.utils import select_rectangle, open_grey_scale_image, crop, clear_border
+from src.data.utils import select_rectangle, open_grey_scale_image, crop
 
 def segment(img, exp_clip_limit=15, postsize=85):
     '''
@@ -154,7 +144,7 @@ def extract_indiv_droplets(img, labeled, border=15, area_upper_cutoff=0.9, area_
 def segment_droplets_to_file(image_filename, crop_box=None, save_overlay=False):
 
     if os.path.isdir(image_filename):
-        img_list = [os.path.join(image_filename,f) for f in os.listdir(image_filename) if f.endswith('.tiff')]
+        img_list = [os.path.join(image_filename,f) for f in os.listdir(image_filename) if f.endswith('.jpg')]
     elif os.path.isfile(image_filename):
         img_list = [image_filename]
 
