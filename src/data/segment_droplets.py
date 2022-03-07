@@ -28,7 +28,7 @@ from tqdm import tqdm
 
 from src.data.utils import open_grey_scale_image
 
-def segment(img, exp_clip_limit=15, postsize=100):
+def segment(img, exp_clip_limit=15, postsize=140):
     '''
     Segments droplets in an image using a watershed algorithm. OpenCV implementation.
 
@@ -47,7 +47,7 @@ def segment(img, exp_clip_limit=15, postsize=100):
     '''
 
     # Adaptive Equalization
-    clahe = cv2.createCLAHE(clipLimit=exp_clip_limit, tileGridSize=(12,12))
+    clahe = cv2.createCLAHE(clipLimit=exp_clip_limit, tileGridSize=(10,10))
     img_adapteq = clahe.apply(img)
 
     # Thresholding (OTSU)
@@ -92,7 +92,7 @@ def segment(img, exp_clip_limit=15, postsize=100):
     return (segmented, segmented.max()-1)
 
 
-def extract_indiv_droplets(img, labeled, border=25, area_upper_cutoff=0.9, area_lower_cutoff=0.3):
+def extract_indiv_droplets(img, labeled, border=25, area_upper_cutoff=0.9, area_lower_cutoff=0.35):
     '''
     Separate the individual droplets as their own image.
 
