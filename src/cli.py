@@ -34,7 +34,7 @@ def process(directory, check_segmentation, save_overlay, save_plot, verbose):
 @click.argument('directory', type=click.Path(exists=True))
 @click.option('-o', '--save-overlay', is_flag=True, help="Save segmented overlay to disk")
 @click.option('-v', '--verbose', count=True, help="Increase verbosity level")
-def segment(directory, compare, save_overlay, verbose):
+def segment(directory, save_overlay, verbose):
     '''Segment an image or directory of images and saves extracted droplets to disk'''
 
     from .data.segment_droplets import segment_droplets_to_file
