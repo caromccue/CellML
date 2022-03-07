@@ -184,7 +184,7 @@ def segment_droplets_to_file(image_filename, crop_box=None, save_overlay=False):
         if not os.path.exists(out_directory):
             os.mkdir(out_directory)
 
-        logging.info("Saving segmented droplets to %s", out_directory)
+        logging.info("Saving segmented cells to %s", out_directory)
 
         # Save all the images in the output directory
         for (i, img) in enumerate(drop_images):
