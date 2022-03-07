@@ -1,9 +1,10 @@
 '''
-Methods to segment individual droplets from an array of drops in an emulsion
+Methods to segment individual cells from an image of adherent cells on posts
 '''
 
-from math import sqrt
-
+import os
+import warnings
+import logging
 import numpy as np
 
 from skimage import io, morphology
