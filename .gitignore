@@ -112,3 +112,5 @@ temp-plot.html
 
 # VS code
 .vscode
+
+compare_segmentation.py

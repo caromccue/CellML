@@ -13,7 +13,7 @@ matplotlib.use('Qt4Agg', force=True)
 import matplotlib.pyplot as plt
 
 from src.data.utils import open_grey_scale_image, select_rectangle, crop
-from src.data.segment_droplets import segment, segment_skimage
+from src.data.segment_droplets import segment
 
 def segmentation_compare(image_path, crop_box=None):
     '''
