@@ -92,7 +92,7 @@ def segment(img, exp_clip_limit=15, postsize=85):
     return (segmented, segmented.max()-1)
 
 
-def extract_indiv_droplets(img, labeled, border=15, area_upper_cutoff=0.9, area_lower_cutoff=0.2):
+def extract_indiv_droplets(img, labeled, border=25, area_upper_cutoff=0.8, area_lower_cutoff=0.3):
     '''
     Separate the individual droplets as their own image.
 
@@ -136,7 +136,7 @@ def extract_indiv_droplets(img, labeled, border=15, area_upper_cutoff=0.9, area_
     for region in reg_clean:
         (min_row, min_col, max_row, max_col) = region.bbox
         drop_image = img[np.max([min_row-border,0]):np.min([max_row+border,max_row]),np.max([min_col-border,0]):np.min([max_col+border,max_col])]
-        resized = cv2.resize(drop_image, (150,150)) * 1./255
+        resized = cv2.resize(drop_image, (100,100)) * 255
         expanded_dim = np.expand_dims(resized, axis=2)
         img_list.append(expanded_dim)
 
@@ -166,7 +166,7 @@ def segment_droplets_to_file(image_filename, crop_box=None, save_overlay=False):
         cropped = crop(image, crop_box)
 
         # Segment image
-        (labeled, num_regions) = segment(cropped)
+        (labeled) = segment(cropped)
 
         # Save the overlay image if requested
         if save_overlay:
