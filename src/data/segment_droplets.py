@@ -136,8 +136,8 @@ def extract_indiv_droplets(img, labeled, border=25, area_upper_cutoff=0.9, area_
     for region in reg_clean:
         (min_row, min_col, max_row, max_col) = region.bbox
         drop_image = img[np.max([min_row-border,0]):np.min([max_row+border,max_row]),np.max([min_col-border,0]):np.min([max_col+border,max_col])]
-        contrast_stretch = exposure.rescale_intensity(drop_image, in_range=(0,255))
-        resized = contrast_stretch * 255
+        #contrast_stretch = exposure.rescale_intensity(drop_image, in_range=(0,255))
+        resized = drop_image * 255
         img_list.append(resized)
 
     return img_list, reg_clean
