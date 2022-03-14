@@ -135,8 +135,8 @@ def extract_indiv_cells(img, labeled, border=25, area_upper_cutoff=3, area_lower
 
     for region in reg_clean:
         (min_row, min_col, max_row, max_col) = region.bbox
-        drop_image = img[np.max([min_row-border,0]):np.min([max_row+border,max_row]),np.max([min_col-border,0]):np.min([max_col+border,max_col])]
-        resized = drop_image * 255
+        cell_image = img[np.max([min_row-border,0]):np.min([max_row+border,max_row]),np.max([min_col-border,0]):np.min([max_col+border,max_col])]
+        resized = cell_image * 255 * 5
         img_list.append(resized)
 
     return img_list, reg_clean
@@ -163,8 +163,8 @@ def segment_cells_to_file(image_filename, save_overlay=False):
                 warnings.simplefilter("ignore")
                 io.imsave(filename, image_overlay)
 
-        # Extract individual droplets
-        drop_images, _ = extract_indiv_cells(image, labeled)
+        # Extract individual cells
+        cell_images, _ = extract_indiv_cells(image, labeled)
 
         # Output folder has the same name as the image by default
         out_directory = image_file.split('.')[0]
@@ -175,7 +175,7 @@ def segment_cells_to_file(image_filename, save_overlay=False):
         logging.info("Saving segmented cells to %s", out_directory)
 
         # Save all the images in the output directory
-        for (i, img) in enumerate(drop_images):
+        for (i, img) in enumerate(cell_images):
             name = os.path.join(out_directory, os.path.basename(image_file).split('.')[0] + '_cell_' + str(i) + '.jpg')
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
