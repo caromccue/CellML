@@ -9,7 +9,9 @@ import pandas as pd
 from tqdm import tqdm
 
 from src.data.utils import get_date_taken, open_grey_scale_image
-from src.data.segment_droplets import segment, extract_indiv_cells
+from src.data.segmentation.segment_cells_2p5 import segment, extract_indiv_cells
+from src.data.segmentation.segment_cells_5 import segment, extract_indiv_cells
+from src.data.segmentation.segment_cells_10 import segment, extract_indiv_cells
 from src.visualization.image_processing_overlay import save_overlay_image
 from src.visualization.process_plotting import plot_cell_data
 from src.models.utils.loading_models import load_model
