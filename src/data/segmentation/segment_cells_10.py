@@ -60,7 +60,7 @@ def segment(img, exp_clip_limit=30):
     #remove_posts = remove_posts.astype(np.uint8)
     
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(2,2))
-    closed = cv2.morphologyEx(remove_posts, cv2.MORPH_CLOSE, kernel, iterations = 1)
+    closed = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, iterations = 1)
     #fill_holes = ndi.morphology.binary_fill_holes(closed, structure=np.ones((3, 3))).astype('uint8')
 
     # noise removal
