@@ -5,12 +5,12 @@ with open("README.md", "r") as f:
 
 setup(name='crystalml',
       version='0.1.1',
-      description='Integrated tool to measure the nucleation rate of protein crystals. ',
+      description='Integrated tool to measure the shapes of adherent cells on posts. ',
       long_description=long_description,
       long_description_content_type="text/markdown",
-      url='https://github.com/hlgirard/CrystalML',
-      author='Henri-Louis Girard',
-      author_email='hl.girard@gmail.com',
+      url='https://github.com/cmccue/CrystalML',
+      author='Caroline McCue',
+      author_email='caroline.t.mccue@gmail.com',
       license='GPLv3',
       packages=find_packages(exclude=["tests.*", "tests"]),
       install_requires=[

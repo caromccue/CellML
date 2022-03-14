@@ -9,13 +9,13 @@ def cli():
 @cli.command()
 @click.argument('directory', type=click.Path(exists=True, file_okay=False))
 @click.option('-c', '--check-segmentation', is_flag=True, help="Displays the segmented image to check accuracy")
-@click.option('-o', '--save-overlay', is_flag=True, help="Save images with crystal detection overlay")
-@click.option('-p', '--save-plot', is_flag=True, help="Generate and save plots of crystal contents over time")
+@click.option('-o', '--save-overlay', is_flag=True, help="Save images with cell detection overlay")
+@click.option('-p', '--save-plot', is_flag=True, help="Generate and save plots of number of posts per cell")
 @click.option('-v', '--verbose', count=True, help="Increase verbosity level")
 def process(directory, check_segmentation, save_overlay, save_plot, verbose):
-    '''Process a directory containing a timeseries of images'''
+    '''Process a directory containing a z stack of images'''
 
-    from .crystal_processing.process_image_folder import process_image_folder
+    from .cell_processing.process_image_folder import process_image_folder
 
     # Setup logging
     if verbose == 1:
@@ -34,22 +34,57 @@ def process(directory, check_segmentation, save_overlay, save_plot, verbose):
 @click.argument('directory', type=click.Path(exists=True))
 @click.option('-o', '--save-overlay', is_flag=True, help="Save segmented overlay to disk")
 @click.option('-v', '--verbose', count=True, help="Increase verbosity level")
-def segment(directory, save_overlay, verbose):
-    '''Segment an image or directory of images and saves extracted droplets to disk'''
+@click.option('-p', '--postsize', required=True, type=click.Choice(['2.5', '5', '10']), help="Size of posts")
+def segment(directory, save_overlay, verbose, postsize):
+    '''Segment an image or directory of images and saves extracted cells to disk'''
+    if postsize == "2.5":
+        from .data.segmentation.segment_cells_2p5 import segment_cells_to_file
 
-    from .data.segment_droplets import segment_droplets_to_file
+        # Setup logging
+        if verbose == 1:
+            logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+        elif verbose >= 2:
+            logging.basicConfig(level=logging.DEBUG, format='%(levelname)s - %(message)s')
+        else:
+            logging.basicConfig(level=logging.WARNING, format='%(levelname)s - %(message)s')
+        
 
-    # Setup logging
-    if verbose == 1:
-        logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
-    elif verbose >= 2:
-        logging.basicConfig(level=logging.DEBUG, format='%(levelname)s - %(message)s')
-    else:
-        logging.basicConfig(level=logging.WARNING, format='%(levelname)s - %(message)s')
+        logging.info("Extracting cells from: %s", directory)
+
+        segment_cells_to_file(directory, save_overlay=save_overlay)
+
+    elif postsize == "5":
+        from .data.segmentation.segment_cells_5 import segment_cells_to_file
+
+        # Setup logging
+        if verbose == 1:
+            logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+        elif verbose >= 2:
+            logging.basicConfig(level=logging.DEBUG, format='%(levelname)s - %(message)s')
+        else:
+            logging.basicConfig(level=logging.WARNING, format='%(levelname)s - %(message)s')
+        
+
+        logging.info("Extracting cells from: %s", directory)
+
+        segment_cells_to_file(directory, save_overlay=save_overlay)
+
+    elif postsize == "10":
+        from .data.segmentation.segment_cells_10 import segment_cells_to_file
+
+        # Setup logging
+        if verbose == 1:
+            logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+        elif verbose >= 2:
+            logging.basicConfig(level=logging.DEBUG, format='%(levelname)s - %(message)s')
+        else:
+            logging.basicConfig(level=logging.WARNING, format='%(levelname)s - %(message)s')
+        
+
+        logging.info("Extracting cells from: %s", directory)
+
+        segment_cells_to_file(directory, save_overlay=save_overlay)
     
-
-    logging.info("Extracting droplets from: %s", directory)
-    segment_droplets_to_file(directory, save_overlay=save_overlay)
 
 @cli.command()
 @click.argument('directory', type=click.Path(exists=True, file_okay=False))

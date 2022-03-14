@@ -23,7 +23,7 @@ def save_overlay_image(path, image, reg_props, reg_labels):
     regProps(N): list(regionProperties)
         List of regionProperties corresponding to the regions to label
     regLabels(N): list(int)
-        List of binary labels (0:red, no crystal or 1:green, crystal detected) corresponding to the regionProperties
+        List of binary labels (0:red, cell attached or 1:green, cell detached) corresponding to the regionProperties
     '''
 
     labeled_binary = np.zeros_like(image)
@@ -31,7 +31,7 @@ def save_overlay_image(path, image, reg_props, reg_labels):
     for (i, region) in enumerate(reg_props):
         np.put(labeled_binary, np.ravel_multi_index(region.coords.T, labeled_binary.shape), reg_labels[i] + 1)
 
-    # If there are no clear droplets, then only 0 (bkgd) and 2 (crystal) are in the array.
+    # If there are no attched cells, then only 0 (bkgd) and 2 (detached) are in the array.
     if 1 not in labeled_binary:
         colors = ['green']
     else:
