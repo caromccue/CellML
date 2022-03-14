@@ -136,8 +136,8 @@ def extract_indiv_cells(img, labeled, border=25, area_upper_cutoff=3, area_lower
     for region in reg_clean:
         (min_row, min_col, max_row, max_col) = region.bbox
         cell_image = img[np.max([min_row-border,0]):np.min([max_row+border,max_row]),np.max([min_col-border,0]):np.min([max_col+border,max_col])]
-        resized = cell_image * 255 * 5
-        img_list.append(resized)
+        #resized = cell_image * 255
+        img_list.append(cell_image)
 
     return img_list, reg_clean
 
