@@ -28,7 +28,7 @@ from tqdm import tqdm
 
 from src.data.utils import open_grey_scale_image
 
-def segment(img, exp_clip_limit=15):
+def segment(img, postsize=85, exp_clip_limit=15):
     '''
     Segments cells in an image using a watershed algorithm. OpenCV implementation.
 
@@ -55,12 +55,12 @@ def segment(img, exp_clip_limit=15):
     _, binary = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
     # Remove small dark regions
-    #remove_posts = morphology.remove_small_objects(binary, postsize)
-    #remove_posts = morphology.remove_small_holes(remove_posts, postsize)
-    #remove_posts = remove_posts.astype(np.uint8)
+    remove_posts = morphology.remove_small_objects(binary, postsize)
+    remove_posts = morphology.remove_small_holes(remove_posts, postsize)
+    remove_posts = remove_posts.astype(np.uint8)
     
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(2,2))
-    closed = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, iterations = 2)
+    closed = cv2.morphologyEx(remove_posts, cv2.MORPH_CLOSE, kernel, iterations = 2)
     #fill_holes = ndi.morphology.binary_fill_holes(closed, structure=np.ones((3, 3))).astype('uint8')
 
     # noise removal
