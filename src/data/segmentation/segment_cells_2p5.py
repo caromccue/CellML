@@ -28,7 +28,7 @@ from tqdm import tqdm
 
 from src.data.utils import open_grey_scale_image
 
-def segment(img, postsize = 10, exp_clip_limit=4):
+def segment(img, exp_clip_limit=15):
     '''
     Segments droplets in an image using a watershed algorithm. OpenCV implementation.
 
@@ -55,25 +55,25 @@ def segment(img, postsize = 10, exp_clip_limit=4):
     _, binary = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
     # Remove small dark regions
-    remove_posts = morphology.remove_small_objects(binary, postsize)
-    remove_posts = morphology.remove_small_holes(remove_posts, postsize)
-    remove_posts = remove_posts.astype(np.uint8)
+    #remove_posts = morphology.remove_small_objects(binary, postsize)
+    #remove_posts = morphology.remove_small_holes(remove_posts, postsize)
+    #remove_posts = remove_posts.astype(np.uint8)
     
-    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(3,3))
-    closed = cv2.morphologyEx(remove_posts, cv2.MORPH_CLOSE, kernel, iterations = 1)
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(2,2))
+    closed = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, iterations = 2)
     #fill_holes = ndi.morphology.binary_fill_holes(closed, structure=np.ones((3, 3))).astype('uint8')
 
     # noise removal
     kernel = np.ones((2,2),np.uint8)
     #opening = cv2.morphologyEx(closed,cv2.MORPH_OPEN,kernel, iterations = 2)
-    closing = cv2.morphologyEx(closed, cv2.MORPH_CLOSE, kernel, iterations = 1)
+    closing = cv2.morphologyEx(closed, cv2.MORPH_CLOSE, kernel, iterations = 2)
     # sure background area
     #sure_bg = cv2.dilate(opening,kernel,iterations=3)
     sure_bg = cv2.dilate(closing,kernel,iterations=1)
     # Finding sure foreground area
     #dist_transform = cv2.distanceTransform(opening,cv2.DIST_L2,5)
     dist_transform = cv2.distanceTransform(closing,cv2.DIST_L2,5)
-    _, sure_fg = cv2.threshold(dist_transform,0.15*dist_transform.max(),255,0)
+    _, sure_fg = cv2.threshold(dist_transform,0.2*dist_transform.max(),255,0)
     # Finding unknown region
     sure_fg = np.uint8(sure_fg)
     unknown = cv2.subtract(sure_bg,sure_fg)
@@ -92,7 +92,7 @@ def segment(img, postsize = 10, exp_clip_limit=4):
     return (segmented, segmented.max()-1)
 
 
-def extract_indiv_cells(img, labeled, border=25, area_upper_cutoff=0.9, area_lower_cutoff=0.35):
+def extract_indiv_cells(img, labeled, border=25, area_upper_cutoff=4, area_lower_cutoff=4, ecc_cutoff=0.5, ecc_cutoff_upper=0.95):
     '''
     Separate the individual cells as their own image.
 
@@ -129,9 +129,9 @@ def extract_indiv_cells(img, labeled, border=25, area_upper_cutoff=0.9, area_low
 
     # Get area cutoff
     area_cutoff_upper = area_upper_cutoff * np.mean([region.area for region in reg])
-    area_cutoff_lower = area_lower_cutoff * np.mean([region.area for region in reg])
+    area_cutoff_lower = area_lower_cutoff * np.median([region.area for region in reg])
 
-    reg_clean = [region for region in reg if region.area < area_cutoff_upper and region.area > area_cutoff_lower]
+    reg_clean = [region for region in reg if region.area < area_cutoff_upper and region.area > area_cutoff_lower and region.eccentricity > ecc_cutoff and region.eccentricity < ecc_cutoff_upper]
 
     for region in reg_clean:
         (min_row, min_col, max_row, max_col) = region.bbox
