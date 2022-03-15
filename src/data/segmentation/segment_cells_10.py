@@ -28,7 +28,7 @@ from tqdm import tqdm
 
 from src.data.utils import open_grey_scale_image
 
-def segment(img, postsize = 150, exp_clip_limit=30):
+def segment(img, postsize = 300, exp_clip_limit=30):
     '''
     Segments cells in an image using a watershed algorithm. OpenCV implementation.
 
@@ -92,7 +92,7 @@ def segment(img, postsize = 150, exp_clip_limit=30):
     return (segmented, segmented.max()-1)
 
 
-def extract_indiv_cells(img, labeled, border=35, area_upper_cutoff=1.5, area_lower_cutoff=2.5, ecc_cutoff=0.25):
+def extract_indiv_cells(img, labeled, border=35, area_upper_cutoff=3, area_lower_cutoff=2.5, ecc_cutoff=0.25):
     '''
     Separate the individual cells as their own image.
 
