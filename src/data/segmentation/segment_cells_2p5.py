@@ -28,7 +28,7 @@ from tqdm import tqdm
 
 from src.data.utils import open_grey_scale_image
 
-def segment(img, postsize=35, exp_clip_limit=15):
+def segment(img, postsize=25, exp_clip_limit=15):
     '''
     Segments droplets in an image using a watershed algorithm. OpenCV implementation.
 
@@ -92,7 +92,7 @@ def segment(img, postsize=35, exp_clip_limit=15):
     return (segmented, segmented.max()-1)
 
 
-def extract_indiv_cells(img, labeled, border=15, area_upper_cutoff=3, area_lower_cutoff=4, ecc_cutoff=0.5, ecc_cutoff_upper=0.95):
+def extract_indiv_cells(img, labeled, border=15, area_upper_cutoff=3, area_lower_cutoff=2, ecc_cutoff=0.5, ecc_cutoff_upper=0.95):
     '''
     Separate the individual cells as their own image.
 

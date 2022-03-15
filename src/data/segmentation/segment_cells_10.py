@@ -92,7 +92,7 @@ def segment(img, postsize = 275, exp_clip_limit=30):
     return (segmented, segmented.max()-1)
 
 
-def extract_indiv_cells(img, labeled, border=25, area_upper_cutoff=3.5, area_lower_cutoff=2.5, ecc_cutoff=0.25):
+def extract_indiv_cells(img, labeled, border=30, area_upper_cutoff=3, area_lower_cutoff=2, ecc_cutoff=0.25):
     '''
     Separate the individual cells as their own image.
 
