@@ -1,4 +1,4 @@
-# CrystalML
+# CellML
 
 [![PyPI version](https://badge.fury.io/py/crystalml.svg)](https://badge.fury.io/py/crystalml)
 [![Travis CI status](https://travis-ci.com/hlgirard/CrystalML.svg?branch=master)](https://travis-ci.com/hlgirard/CrystalML/branches)
@@ -7,21 +7,18 @@
 
 **Disclaimer:** This program is undergoing active development and should _not_ be used for production. All APIs and commands are susceptible to change without notice.
 
-Integrated tool to measure the nucleation rate of protein crystals from the crystallization kinetics of an array of independent identical droplets.
+Integrated tool to segment individual cells from optical cell images and use machine learning to determine whether cells are adherent or not based on their shapes.
 
-From a directory containing a time-series of images of multiple droplets, the tool segments individual droplet and uses a pre-trained CNN model to determine the presence or absence of crystals in each drop.
-The nucleation rate is evaluated from the rate of decay of the proportion of drops that _do not_ exhibit visible crystals.
-
-![Schematic](docs/crystalml_schem.jpg)
+From a directory containing a time-series of images of cells on surfaces, the tool segments individual cells and uses a pre-trained CNN model to determine whether each cell is adherent or not.
 
 ## Installation
 
 ### Install with pip
 
-CrystalML is on PyPI so it can be installed with pip
+CellML is on PyPI so it can be installed with pip
 
 ```
-pip install crystalml
+pip install cellml
 ```
 
 ### Install from source
@@ -29,13 +26,13 @@ pip install crystalml
 Clone the repository to your computer
 
 ```
-git clone https://github.com/hlgirard/CrystalML.git
+git clone https://github.com/caromccue/CellML.git
 ```
 
 and install with pip 
 
 ```
-cd CrystalML
+cd CellML
 pip install .
 ```
 
@@ -43,36 +40,37 @@ pip install .
 
 ### Quickstart
 
-A time series of images of an emulsion of protein-laden droplets must be stored in a directory prior to usage of CrystalML
+A time series of images of cells on surfaces must be stored in a directory prior to usage of CellML
 The application can then be used to process the images as follows:
 ```
-crystalml process --save-plot path/to/directory
+cellml process --save-plot path/to/directory
 ```
 
-### `crystalml process` command
+### `cellml process` command
 
-The `process` command takes a directory of images, segments the droplets in each image and determines how many droplets are present and how many of these contain crystals.
-The program saves a `.csv` file at the root of that directory with the name of each image, the time it was taken (from EXIF data) and the number of droplets (total, clear and containing crystals).
+The `process` command takes a directory of images, segments the cells in each image and determines how many cells are adherent or detached from the surface.
+The program saves a `.csv` file at the root of that directory with the name of each image, the time it was taken (from EXIF data) and the number of cells (total, adherent and detached).
 
 #### Arguments
 
 - `-c`, `--check-segmentation` displays the result of segmenting an image (selected at approximately 80% of the time series) to verify that the segmentation algorithm works well before processing.
-- `-o`, `--save-overlay` resaves all images in the directory with an overlay showing detected droplets in red (no crystal) or green (crystal detected) for process control.
-- `-p`, `--save-plot` generates and saves plots of crystal contents over time
+- `-o`, `--save-overlay` resaves all images in the directory with an overlay showing detected cells in red (adherent) or green (detached) for process control.
+- `-p`, `--save-plot` generates and saves plots of cell detachment over time
 - `-v`, `--verbose` increases the verbosity level
 
-### `crystalml segment` command
+### `cellml segment` command
 
-The `segment` command runs the segmentation algorithm on an image or a directory of images and saves the segmented droplet images to disk.
+The `segment` command runs the segmentation algorithm on an image or a directory of images and saves the segmented cell images to disk.
 
 #### Arguments
 
-- `-o`, `--save-overlay` resaves all images in the directory with an overlay showing detected droplets
+- `-o`, `--save-overlay` resaves all images in the directory with an overlay showing detected cells
 - `-v`, `--verbose` increases the verbosity level
+- `-p`, `--postsize` selects the size of microposts on the surfaces in the images to set the segmentation parameters accordingly
 
-### `crystalml train` command
+### `cellml train` command
 
-The `train` command is used to train the machine learning models used to label the segmented droplets as containing crystals or not. A directory of training data is expected containing subdirectories named `Crystal` and `Clear` containing grayscale images of segmented droplets (use the `segment` command to generate the images).
+The `train` command is used to train the machine learning models used to label the segmented cells as adherent or not. A directory of training data is expected containing subdirectories named `Detached` and `Adherent` containing grayscale images of segmented cells (use the `segment` command to generate the images).
 
 #### Arguments
 
@@ -82,12 +80,12 @@ The `train` command is used to train the machine learning models used to label t
 
 ## Repository structure
 
-- `models`: pre-trained machine learning models for crystal presence discrimination
+- `models`: pre-trained machine learning models for cell adhesion discrimination
 - `notebooks`: jupyer notebooks evaluating different image segmentation strategies
 - `src`: source code for the project
-    - `crystal_processing`: processing pipeline from directory to nucleation rate
-    - `data`: data processing methods, including cropping, segmentation, extraction
-    - `models`: model definition and training scripts for the droplet binary labelling task
+    - `cell_processing`: processing pipeline from directory to detachment rate
+    - `data`: data processing methods, including segmentation and extraction
+    - `models`: model definition and training scripts for the cell binary labelling task
     - `visualization`: visualization and plotting methods
     - `cli.py`: entry point to the command line interface
 - `tests`: unittesting
