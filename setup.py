@@ -3,12 +3,12 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as f:
     long_description = f.read()
 
-setup(name='crystalml',
+setup(name='cellml',
       version='0.1.1',
       description='Integrated tool to measure the shapes of adherent cells on posts. ',
       long_description=long_description,
       long_description_content_type="text/markdown",
-      url='https://github.com/cmccue/CrystalML',
+      url='https://github.com/caromccue/CellML',
       author='Caroline McCue',
       author_email='caroline.t.mccue@gmail.com',
       license='GPLv3',
@@ -36,7 +36,7 @@ setup(name='crystalml',
       ],
       entry_points={
           'console_scripts': [
-              'crystalml = src.cli:cli',
+              'cellml = src.cli:cli',
           ],
       },
       zip_safe=False,

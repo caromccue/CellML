@@ -1,4 +1,4 @@
-''' Unittesting for droplet segmentation cases '''
+''' Unittesting for cell segmentation cases '''
 
 import unittest
 
