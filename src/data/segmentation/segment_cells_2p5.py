@@ -140,12 +140,11 @@ def extract_indiv_cells(img, labeled, border=15, area_upper_cutoff=3, area_lower
         contrast_stretch = exposure.rescale_intensity(cell_image, in_range=(0,255))
         #resized = cell_image * 255
         img_list.append(contrast_stretch)
-        area_list = region.area.tolist()
-        #areas = {img_list : region.area}
+        area_list.append(region.area)
 
     return img_list, reg_clean, area_list
 
-def segment_cells_to_file(image_filename, area_list, save_overlay=False):
+def segment_cells_to_file(image_filename, save_overlay=False):
 
     if os.path.isdir(image_filename):
         img_list = [os.path.join(image_filename,f) for f in os.listdir(image_filename) if f.endswith('.jpg')]
@@ -168,7 +167,7 @@ def segment_cells_to_file(image_filename, area_list, save_overlay=False):
                 io.imsave(filename, image_overlay)
 
         # Extract individual cells
-        cell_images, _ = extract_indiv_cells(image, labeled)
+        cell_images, _, area_list = extract_indiv_cells(image, labeled)
 
         # Output folder has the same name as the image by default
         out_directory = image_file.split('.')[0]
@@ -184,7 +183,8 @@ def segment_cells_to_file(image_filename, area_list, save_overlay=False):
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 io.imsave(name, img, check_contrast=False)
-            cellarea = {name[j]: area_list[j] for j in range(len(name))}
+        
+        cellarea = {name[j] : area_list[j] for j in range(len(name))}
         
         with open(os.path.join(out_directory, os.path.basename(image_file).split('.')[0] + '.pkl'), 'wb') as f:
             f.write(pickle.dumps(cellarea))
