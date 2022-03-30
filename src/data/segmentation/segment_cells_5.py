@@ -132,7 +132,7 @@ def extract_indiv_cells(img, labeled, border=20, area_upper_cutoff=2.5, area_low
     area_cutoff_upper = area_upper_cutoff * np.mean([region.area for region in reg])
     area_cutoff_lower = area_lower_cutoff * np.median([region.area for region in reg])
 
-    reg_clean = [region for region in reg if region.area < area_cutoff_upper and region.area > area_cutoff_lower and region.eccentricity > ecc_cutoff and region.eccentricity < ecc_cutoff_upper]
+    reg_clean = [region for region in reg if region.area < area_cutoff_upper and region.area > area_cutoff_lower and region.eccentricity > ecc_cutoff]
 
     for region in reg_clean:
         (min_row, min_col, max_row, max_col) = region.bbox
