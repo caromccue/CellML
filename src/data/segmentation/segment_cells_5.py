@@ -21,7 +21,7 @@ import cv2
 
 
 import os
-
+import pickle
 
 from tqdm import tqdm
 
@@ -120,8 +120,9 @@ def extract_indiv_cells(img, labeled, border=20, area_upper_cutoff=2.5, area_low
     # Get region props
     reg = regionprops(labeled, coordinates='rc')[1:] # First label corresponds to the background (OpenCV)
 
-    # Initialize list of images
+    # Initialize list of images and areas
     img_list = []
+    area_list = []
 
     # Get original image size
     max_col = img.shape[1]
@@ -131,7 +132,7 @@ def extract_indiv_cells(img, labeled, border=20, area_upper_cutoff=2.5, area_low
     area_cutoff_upper = area_upper_cutoff * np.mean([region.area for region in reg])
     area_cutoff_lower = area_lower_cutoff * np.median([region.area for region in reg])
 
-    reg_clean = [region for region in reg if region.area < area_cutoff_upper and region.area > area_cutoff_lower and region.eccentricity > ecc_cutoff]
+    reg_clean = [region for region in reg if region.area < area_cutoff_upper and region.area > area_cutoff_lower and region.eccentricity > ecc_cutoff and region.eccentricity < ecc_cutoff_upper]
 
     for region in reg_clean:
         (min_row, min_col, max_row, max_col) = region.bbox
@@ -139,8 +140,9 @@ def extract_indiv_cells(img, labeled, border=20, area_upper_cutoff=2.5, area_low
         contrast_stretch = exposure.rescale_intensity(cell_image, in_range=(0,255))
         #resized = cell_image * 255
         img_list.append(contrast_stretch)
+        area_list.append(region.area)
 
-    return img_list, reg_clean
+    return img_list, reg_clean, area_list
 
 def segment_cells_to_file(image_filename, save_overlay=False):
 
@@ -165,7 +167,7 @@ def segment_cells_to_file(image_filename, save_overlay=False):
                 io.imsave(filename, image_overlay)
 
         # Extract individual cells
-        cell_images, _ = extract_indiv_cells(image, labeled)
+        cell_images, _, area_list = extract_indiv_cells(image, labeled)
 
         # Output folder has the same name as the image by default
         out_directory = image_file.split('.')[0]
@@ -181,3 +183,9 @@ def segment_cells_to_file(image_filename, save_overlay=False):
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 io.imsave(name, img, check_contrast=False)
+        
+        cellarea = {name[j] : area_list[j] for j in range(len(name))}
+        
+        with open(os.path.join(out_directory, os.path.basename(image_file).split('.')[0] + '.pkl'), 'wb') as f:
+            f.write(pickle.dumps(cellarea))
+
