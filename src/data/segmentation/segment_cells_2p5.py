@@ -21,7 +21,7 @@ import cv2
 
 
 import os
-
+import pickle
 
 from tqdm import tqdm
 
@@ -120,8 +120,9 @@ def extract_indiv_cells(img, labeled, border=15, area_upper_cutoff=3, area_lower
     # Get region props
     reg = regionprops(labeled, coordinates='rc')[1:] # First label corresponds to the background (OpenCV)
 
-    # Initialize list of images
+    # Initialize list of images and areas
     img_list = []
+    area_list = []
 
     # Get original image size
     max_col = img.shape[1]
@@ -139,10 +140,12 @@ def extract_indiv_cells(img, labeled, border=15, area_upper_cutoff=3, area_lower
         contrast_stretch = exposure.rescale_intensity(cell_image, in_range=(0,255))
         #resized = cell_image * 255
         img_list.append(contrast_stretch)
+        area_list = region.area.tolist()
+        #areas = {img_list : region.area}
 
-    return img_list, reg_clean
+    return img_list, reg_clean, area_list
 
-def segment_cells_to_file(image_filename, save_overlay=False):
+def segment_cells_to_file(image_filename, area_list, save_overlay=False):
 
     if os.path.isdir(image_filename):
         img_list = [os.path.join(image_filename,f) for f in os.listdir(image_filename) if f.endswith('.jpg')]
@@ -181,3 +184,8 @@ def segment_cells_to_file(image_filename, save_overlay=False):
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 io.imsave(name, img, check_contrast=False)
+            cellarea = {name[j]: area_list[j] for j in range(len(name))}
+        
+        with open(os.path.join(out_directory, os.path.basename(image_file).split('.')[0] + '.pkl'), 'wb') as f:
+            f.write(pickle.dumps(cellarea))
+
