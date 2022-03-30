@@ -37,8 +37,8 @@ def process(directory, check_segmentation, save_overlay, save_plot, verbose):
 @click.option('-p', '--postsize', required=True, type=click.Choice(['2.5', '5', '10']), help="Size of posts")
 def segment(directory, save_overlay, verbose, postsize):
     '''Segment an image or directory of images and saves extracted cells to disk'''
-    if postsize == "2.5":
-        from .data.segmentation.segment_cells_2p5 import segment_cells_to_file
+    if postsize == "10":
+        from .data.segmentation.segment_cells_10 import segment_cells_to_file
 
         # Setup logging
         if verbose == 1:
@@ -69,8 +69,8 @@ def segment(directory, save_overlay, verbose, postsize):
 
         segment_cells_to_file(directory, save_overlay=save_overlay)
 
-    elif postsize == "10":
-        from .data.segmentation.segment_cells_10 import segment_cells_to_file
+    elif postsize == "2.5":
+        from .data.segmentation.segment_cells_2p5 import segment_cells_to_file
 
         # Setup logging
         if verbose == 1:
