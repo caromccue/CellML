@@ -167,7 +167,7 @@ def segment_cells_to_file(image_filename, save_overlay=False):
                 io.imsave(filename, image_overlay)
 
         # Extract individual cells
-        cell_images, _, area_list = extract_indiv_cells(image, labeled)
+        cell_images, _, area_list2p5 = extract_indiv_cells(image, labeled)
 
         # Output folder has the same name as the image by default
         out_directory = image_file.split('.')[0]
@@ -184,8 +184,8 @@ def segment_cells_to_file(image_filename, save_overlay=False):
                 warnings.simplefilter("ignore")
                 io.imsave(name, img, check_contrast=False)
         
-        cellarea = {name[j] : area_list[j] for j in range(len(name))}
+        cellarea2p5 = {name[j] : area_list2p5[j] for j in range(len(name))}
         
         with open(os.path.join(out_directory, os.path.basename(image_file).split('.')[0] + '.pkl'), 'wb') as f:
-            f.write(pickle.dumps(cellarea))
+            f.write(pickle.dumps(cellarea2p5))
 

@@ -92,7 +92,7 @@ def segment(img, postsize=275, exp_clip_limit=30):
     return (segmented, segmented.max()-1)
 
 
-def extract_indiv_cells(img, labeled, border=30, area_upper_cutoff=3, area_lower_cutoff=2, ecc_cutoff=0.25, ecc_cutoff_upper=1):
+def extract_indiv_cells(img, labeled, border=15, area_upper_cutoff=3, area_lower_cutoff=2, ecc_cutoff=0.25, ecc_cutoff_upper=1):
     '''
     Separate the individual cells as their own image.
 
@@ -167,7 +167,7 @@ def segment_cells_to_file(image_filename, save_overlay=False):
                 io.imsave(filename, image_overlay)
 
         # Extract individual cells
-        cell_images, _, area_list = extract_indiv_cells(image, labeled)
+        cell_images, _, area_list10 = extract_indiv_cells(image, labeled)
 
         # Output folder has the same name as the image by default
         out_directory = image_file.split('.')[0]
@@ -184,8 +184,8 @@ def segment_cells_to_file(image_filename, save_overlay=False):
                 warnings.simplefilter("ignore")
                 io.imsave(name, img, check_contrast=False)
         
-        cellarea = {name[j] : area_list[j] for j in range(len(name))}
+        cellarea10 = {name[j] : area_list10[j] for j in range(len(name))}
         
         with open(os.path.join(out_directory, os.path.basename(image_file).split('.')[0] + '.pkl'), 'wb') as f:
-            f.write(pickle.dumps(cellarea))
+            f.write(pickle.dumps(cellarea10))
 
