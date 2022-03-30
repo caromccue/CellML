@@ -122,7 +122,7 @@ def extract_indiv_cells(img, labeled, border=15, area_upper_cutoff=3, area_lower
 
     # Initialize list of images and areas
     img_list = []
-    area_list = []
+    area_list10 = []
 
     # Get original image size
     max_col = img.shape[1]
@@ -140,9 +140,9 @@ def extract_indiv_cells(img, labeled, border=15, area_upper_cutoff=3, area_lower
         contrast_stretch = exposure.rescale_intensity(cell_image, in_range=(0,255))
         #resized = cell_image * 255
         img_list.append(contrast_stretch)
-        area_list.append(region.area)
+        area_list10.append(region.area)
 
-    return img_list, reg_clean, area_list
+    return img_list, reg_clean, area_list10
 
 def segment_cells_to_file(image_filename, save_overlay=False):
 
