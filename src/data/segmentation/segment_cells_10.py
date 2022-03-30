@@ -28,9 +28,9 @@ from tqdm import tqdm
 
 from src.data.utils import open_grey_scale_image
 
-def segment(img, postsize = 275, exp_clip_limit=30):
+def segment(img, postsize=275, exp_clip_limit=30):
     '''
-    Segments cells in an image using a watershed algorithm. OpenCV implementation.
+    Segments droplets in an image using a watershed algorithm. OpenCV implementation.
 
     Parameters
     ----------
@@ -92,7 +92,7 @@ def segment(img, postsize = 275, exp_clip_limit=30):
     return (segmented, segmented.max()-1)
 
 
-def extract_indiv_cells(img, labeled, border=30, area_upper_cutoff=3, area_lower_cutoff=2, ecc_cutoff=0.25):
+def extract_indiv_cells(img, labeled, border=30, area_upper_cutoff=3, area_lower_cutoff=2, ecc_cutoff=0.25, ecc_cutoff_upper=1):
     '''
     Separate the individual cells as their own image.
 
@@ -132,7 +132,7 @@ def extract_indiv_cells(img, labeled, border=30, area_upper_cutoff=3, area_lower
     area_cutoff_upper = area_upper_cutoff * np.mean([region.area for region in reg])
     area_cutoff_lower = area_lower_cutoff * np.median([region.area for region in reg])
 
-    reg_clean = [region for region in reg if region.area < area_cutoff_upper and region.area > area_cutoff_lower and region.eccentricity > ecc_cutoff]
+    reg_clean = [region for region in reg if region.area < area_cutoff_upper and region.area > area_cutoff_lower and region.eccentricity > ecc_cutoff and region.eccentricity < ecc_cutoff_upper]
 
     for region in reg_clean:
         (min_row, min_col, max_row, max_col) = region.bbox
