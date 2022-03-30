@@ -1,6 +1,8 @@
 import unittest
 
-from src.data.segment_droplets import segment
+from src.data.segmentation.segment_cells_2p5 import segment
+from src.data.segmentation.segment_cells_5 import segment
+from src.data.segmentation.segment_cells_10 import segment
 from src.data.utils import open_grey_scale_image
 
 class TestSegmentDroplets(unittest.TestCase):

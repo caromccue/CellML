@@ -6,7 +6,7 @@ import plotly.graph_objs as go
 import plotly.io as pio
 
 def plot_cell_data(df, directory):
-    '''Plot data from cell detahcment experiment'''
+    '''Plot data from cell detachment experiment'''
 
     fig = tools.make_subplots(rows=2, cols=1, shared_xaxes=True, subplot_titles=('Cell Detachment', 'Process control'))
 
