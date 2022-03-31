@@ -184,7 +184,7 @@ def segment_cells_to_file5(image_filename, save_overlay=False):
                 warnings.simplefilter("ignore")
                 io.imsave(name5, img, check_contrast=False)
         
-        cellarea5 = {name5[j] : area_list5[j] for j in range(len(name5))}
+        cellarea5 = {name5[l] : area_list5[l] for l in range(len(name5))}
         
         with open(os.path.join(out_directory, os.path.basename(image_file).split('.')[0] + '.pkl'), 'wb') as f:
             f.write(pickle.dumps(cellarea5))
