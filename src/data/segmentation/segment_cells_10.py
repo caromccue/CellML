@@ -121,7 +121,7 @@ def extract_indiv_cells10(img, labeled, border=15, area_upper_cutoff=3, area_low
     reg = regionprops(labeled, coordinates='rc')[1:] # First label corresponds to the background (OpenCV)
 
     # Initialize list of images and areas
-    img_list = []
+    img_list10 = []
     area_list10 = []
 
     # Get original image size
@@ -139,10 +139,10 @@ def extract_indiv_cells10(img, labeled, border=15, area_upper_cutoff=3, area_low
         cell_image = img[np.max([min_row-border,0]):np.min([max_row+border,max_row]),np.max([min_col-border,0]):np.min([max_col+border,max_col])]
         contrast_stretch = exposure.rescale_intensity(cell_image, in_range=(0,255))
         #resized = cell_image * 255
-        img_list.append(contrast_stretch)
+        img_list10.append(contrast_stretch)
         area_list10.append(region.area)
 
-    return img_list, reg_clean, area_list10
+    return img_list10, reg_clean, area_list10
 
 def segment_cells_to_file10(image_filename, save_overlay=False):
 
