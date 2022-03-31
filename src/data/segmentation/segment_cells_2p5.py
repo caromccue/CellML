@@ -144,7 +144,7 @@ def extract_indiv_cells(img, labeled, border=15, area_upper_cutoff=3, area_lower
 
     return img_list, reg_clean, area_list2p5
 
-def segment_cells_to_file(image_filename, save_overlay=False):
+def segment_cells_to_file2p5(image_filename, save_overlay=False):
 
     if os.path.isdir(image_filename):
         img_list = [os.path.join(image_filename,f) for f in os.listdir(image_filename) if f.endswith('.jpg')]
