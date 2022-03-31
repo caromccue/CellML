@@ -28,7 +28,7 @@ from tqdm import tqdm
 
 from src.data.utils import open_grey_scale_image
 
-def segment(img, postsize=275, exp_clip_limit=30):
+def segment10(img, postsize=275, exp_clip_limit=30):
     '''
     Segments droplets in an image using a watershed algorithm. OpenCV implementation.
 
@@ -92,7 +92,7 @@ def segment(img, postsize=275, exp_clip_limit=30):
     return (segmented, segmented.max()-1)
 
 
-def extract_indiv_cells(img, labeled, border=15, area_upper_cutoff=3, area_lower_cutoff=2, ecc_cutoff=0.25, ecc_cutoff_upper=1):
+def extract_indiv_cells10(img, labeled, border=15, area_upper_cutoff=3, area_lower_cutoff=2, ecc_cutoff=0.25, ecc_cutoff_upper=1):
     '''
     Separate the individual cells as their own image.
 
@@ -156,7 +156,7 @@ def segment_cells_to_file10(image_filename, save_overlay=False):
         image = open_grey_scale_image(image_file)
 
         # Segment image
-        (labeled, num_regions) = segment(image)
+        (labeled, num_regions) = segment10(image)
 
         # Save the overlay image if requested
         if save_overlay:
@@ -167,7 +167,7 @@ def segment_cells_to_file10(image_filename, save_overlay=False):
                 io.imsave(filename, image_overlay)
 
         # Extract individual cells
-        cell_images, _, area_list10 = extract_indiv_cells(image, labeled)
+        cell_images, _, area_list10 = extract_indiv_cells10(image, labeled)
 
         # Output folder has the same name as the image by default
         out_directory = image_file.split('.')[0]
@@ -179,12 +179,12 @@ def segment_cells_to_file10(image_filename, save_overlay=False):
 
         # Save all the images in the output directory
         for (i, img) in enumerate(cell_images):
-            name = os.path.join(out_directory, os.path.basename(image_file).split('.')[0] + '_cell_' + str(i) + '.jpg')
+            name10 = os.path.join(out_directory, os.path.basename(image_file).split('.')[0] + '_cell_' + str(i) + '.jpg')
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                io.imsave(name, img, check_contrast=False)
+                io.imsave(name10, img, check_contrast=False)
         
-        cellarea10 = {name[j] : area_list10[j] for j in range(len(name))}
+        cellarea10 = {name10[j] : area_list10[j] for j in range(len(name10))}
         
         with open(os.path.join(out_directory, os.path.basename(image_file).split('.')[0] + '.pkl'), 'wb') as f:
             f.write(pickle.dumps(cellarea10))
