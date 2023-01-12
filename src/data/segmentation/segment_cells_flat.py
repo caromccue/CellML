@@ -184,7 +184,7 @@ def segment_cells_to_fileflat(image_filename, save_overlay=False):
                 warnings.simplefilter("ignore")
                 io.imsave(nameflat, img, check_contrast=False)
         
-        cellareaflat = {nameflat[k] : area_listflat[k] for k in range(len(nameflat))} 
+        cellareaflat = {nameflat[m] : area_listflat[m] for m in range(len(nameflat))} 
         
         with open(os.path.join(out_directory, os.path.basename(image_file).split('.')[0] + '.pkl'), 'wb') as f:
             f.write(pickle.dumps(cellareaflat))
