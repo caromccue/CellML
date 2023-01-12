@@ -179,12 +179,12 @@ def segment_cells_to_fileflat(image_filename, save_overlay=False):
 
         # Save all the images in the output directory
         for (i, img) in enumerate(cell_images):
-            name10 = os.path.join(out_directory, os.path.basename(image_file).split('.')[0] + '_cell_' + str(i) + '.jpg')
+            nameflat = os.path.join(out_directory, os.path.basename(image_file).split('.')[0] + '_cell_' + str(i) + '.jpg')
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                io.imsave(name10, img, check_contrast=False)
+                io.imsave(nameflat, img, check_contrast=False)
         
-        cellareaflat = {name10[k] : area_listflat[k] for k in range(len(name10))} 
+        cellareaflat = {nameflat[k] : area_listflat[k] for k in range(len(nameflat))} 
         
         with open(os.path.join(out_directory, os.path.basename(image_file).split('.')[0] + '.pkl'), 'wb') as f:
             f.write(pickle.dumps(cellareaflat))
