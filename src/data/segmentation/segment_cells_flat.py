@@ -63,7 +63,7 @@ def segmentflat(img, postsize=50, exp_clip_limit=20):
     closed = cv2.morphologyEx(remove_posts, cv2.MORPH_CLOSE, kernel, iterations = 2)
 
     # noise removal
-    closed = np.invert(closed)
+    # closed = np.invert(closed)
     kernel = np.ones((2,2),np.uint8)
     #opening = cv2.morphologyEx(closed,cv2.MORPH_OPEN,kernel, iterations = 2)
     closing = cv2.morphologyEx(closed, cv2.MORPH_CLOSE, kernel, iterations = 2)
