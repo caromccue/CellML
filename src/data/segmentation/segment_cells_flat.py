@@ -52,7 +52,7 @@ def segmentflat(img, postsize=50, exp_clip_limit=20):
 
     # Thresholding (OTSU)
     blur = cv2.GaussianBlur(img_adapteq, (3,3), 0)
-    _, binary = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    _, binary = cv2.threshold(blur,95,255,cv2.THRESH_BINARY)
 
     # Remove small dark regions
     remove_posts = morphology.remove_small_objects(binary, postsize)
@@ -63,10 +63,10 @@ def segmentflat(img, postsize=50, exp_clip_limit=20):
     closed = cv2.morphologyEx(remove_posts, cv2.MORPH_CLOSE, kernel, iterations = 2)
 
     # noise removal
-    # closed = np.invert(closed)
+    inverted = np.invert(closed)
     kernel = np.ones((2,2),np.uint8)
     #opening = cv2.morphologyEx(closed,cv2.MORPH_OPEN,kernel, iterations = 2)
-    closing = cv2.morphologyEx(closed, cv2.MORPH_CLOSE, kernel, iterations = 2)
+    closing = cv2.morphologyEx(inverted, cv2.MORPH_CLOSE, kernel, iterations = 2)
     # sure background area
     #sure_bg = cv2.dilate(opening,kernel,iterations=3)
     sure_bg = cv2.dilate(closing,kernel,iterations=2)
