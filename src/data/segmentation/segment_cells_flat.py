@@ -28,7 +28,7 @@ from tqdm import tqdm
 
 from src.data.utils import open_grey_scale_image
 
-def segmentflat(img, postsize=50, exp_clip_limit=20):
+def segmentflat(img, postsize=50, exp_clip_limit=4):
     '''
     Segments cells in an image using a watershed algorithm. OpenCV implementation.
 
