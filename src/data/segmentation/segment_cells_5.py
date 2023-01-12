@@ -177,6 +177,9 @@ def segment_cells_to_file5(image_filename, save_overlay=False):
 
         logging.info("Saving segmented cells to %s", out_directory)
 
+        # initialize list of images
+        name5 = []
+
         # Save all the images in the output directory
         for (i, img) in enumerate(cell_images):
             name5 = os.path.join(out_directory, os.path.basename(image_file).split('.')[0] + '_cell_' + str(i) + '.jpg')

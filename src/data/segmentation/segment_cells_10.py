@@ -176,6 +176,9 @@ def segment_cells_to_file10(image_filename, save_overlay=False):
             os.mkdir(out_directory)
 
         logging.info("Saving segmented cells to %s", out_directory)
+        
+        # initialize list of images
+        name10 = []
 
         # Save all the images in the output directory
         for (i, img) in enumerate(cell_images):
