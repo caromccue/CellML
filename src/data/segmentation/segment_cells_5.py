@@ -179,6 +179,7 @@ def segment_cells_to_file5(image_filename, save_overlay=False):
 
         # initialize list of images
         name5 = []
+        cellarea5 = []
 
         # Save all the images in the output directory
         for (i, img) in enumerate(cell_images):
