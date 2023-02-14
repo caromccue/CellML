@@ -28,7 +28,7 @@ from tqdm import tqdm
 
 from src.data.utils import open_grey_scale_image
 
-def segment10(img, postsize=275, exp_clip_limit=30):
+def segment10(img, postsize=275, exp_clip_limit=10):
     '''
     Segments droplets in an image using a watershed algorithm. OpenCV implementation.
 

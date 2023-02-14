@@ -52,18 +52,18 @@ def segmentflat(img, postsize=50, exp_clip_limit=4):
 
     # Thresholding (OTSU)
     blur = cv2.GaussianBlur(img_adapteq, (3,3), 0)
-    _, binary = cv2.threshold(blur,95,255,cv2.THRESH_BINARY)
-
-    # Remove small dark regions
-    remove_posts = morphology.remove_small_objects(binary, postsize)
-    remove_posts = morphology.remove_small_holes(remove_posts, postsize)
-    remove_posts = remove_posts.astype(np.uint8)
+    _, binary = cv2.threshold(blur,80,255,cv2.THRESH_BINARY)
     
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(2,2))
-    closed = cv2.morphologyEx(remove_posts, cv2.MORPH_CLOSE, kernel, iterations = 2)
+    closed = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, iterations = 2)
+
+    # Remove small dark regions
+    remove_posts = morphology.remove_small_objects(closed, postsize)
+    remove_posts = morphology.remove_small_holes(remove_posts, postsize)
+    remove_posts = remove_posts.astype(np.uint8)
 
     # noise removal
-    inverted = np.invert(closed)
+    inverted = np.invert(remove_posts)
     kernel = np.ones((2,2),np.uint8)
     #opening = cv2.morphologyEx(closed,cv2.MORPH_OPEN,kernel, iterations = 2)
     closing = cv2.morphologyEx(inverted, cv2.MORPH_CLOSE, kernel, iterations = 2)
@@ -76,23 +76,22 @@ def segmentflat(img, postsize=50, exp_clip_limit=4):
     _, sure_fg = cv2.threshold(dist_transform,0.15*dist_transform.max(),255,0)
     # Finding unknown region
     sure_fg = np.uint8(sure_fg)
-    unknown = cv2.subtract(sure_bg,sure_fg)
 
     # Marker labelling
     _, markers = cv2.connectedComponents(sure_fg)
     # Add one to all labels so that sure background is not 0, but 1
-    #markers = markers+1
+    markers = markers+1
     # Now, mark the region of unknown with zero
-    #markers[unknown > 0] = 0
+    markers[sure_bg] = 1
 
     # Run the watershed algorithm
-    three_channels = cv2.cvtColor(closed, cv2.COLOR_GRAY2BGR)
+    three_channels = cv2.cvtColor(inverted, cv2.COLOR_GRAY2BGR)
     segmented = cv2.watershed(three_channels.astype('uint8'), markers)
 
     return (segmented, segmented.max()-1)
 
 
-def extract_indiv_cellsflat(img, labeled, border=35, area_upper_cutoff=3, area_lower_cutoff=0.33, ecc_cutoff=0.05, ecc_cutoff_upper=1):
+def extract_indiv_cellsflat(img, labeled, border=15, area_upper_cutoff=3, area_lower_cutoff=0.33, ecc_cutoff=0.05, ecc_cutoff_upper=1):
     '''
     Separate the individual cells as their own image.
 
