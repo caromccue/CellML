@@ -53,17 +53,17 @@ def segmentflat(img, postsize=50, exp_clip_limit=4):
     # Thresholding (OTSU)
     blur = cv2.GaussianBlur(img_adapteq, (3,3), 0)
     _, binary = cv2.threshold(blur,80,255,cv2.THRESH_BINARY)
-    
-    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(2,2))
-    closed = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, iterations = 2)
 
     # Remove small dark regions
-    remove_posts = morphology.remove_small_objects(closed, postsize)
+    remove_posts = morphology.remove_small_objects(binary, postsize)
     remove_posts = morphology.remove_small_holes(remove_posts, postsize)
     remove_posts = remove_posts.astype(np.uint8)
 
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(2,2))
+    closed = cv2.morphologyEx(remove_posts, cv2.MORPH_CLOSE, kernel, iterations = 2)
+
     # noise removal
-    inverted = np.invert(remove_posts)
+    inverted = np.invert(closed)
     kernel = np.ones((2,2),np.uint8)
     #opening = cv2.morphologyEx(closed,cv2.MORPH_OPEN,kernel, iterations = 2)
     closing = cv2.morphologyEx(inverted, cv2.MORPH_CLOSE, kernel, iterations = 2)
@@ -85,7 +85,7 @@ def segmentflat(img, postsize=50, exp_clip_limit=4):
     #markers[sure_bg] = 1
 
     # Run the watershed algorithm
-    three_channels = cv2.cvtColor(inverted, cv2.COLOR_GRAY2BGR)
+    three_channels = cv2.cvtColor(closed, cv2.COLOR_GRAY2BGR)
     segmented = cv2.watershed(three_channels.astype('uint8'), markers)
 
     return (segmented, segmented.max()-1)
