@@ -80,9 +80,9 @@ def segmentflat(img, postsize=50, exp_clip_limit=4):
     # Marker labelling
     _, markers = cv2.connectedComponents(sure_fg)
     # Add one to all labels so that sure background is not 0, but 1
-    markers = markers+1
+    #markers = markers+1
     # Now, mark the region of unknown with zero
-    markers[sure_bg] = 1
+    #markers[sure_bg] = 1
 
     # Run the watershed algorithm
     three_channels = cv2.cvtColor(inverted, cv2.COLOR_GRAY2BGR)
